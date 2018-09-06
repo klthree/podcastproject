@@ -1,0 +1,4 @@
+#ignore all compiled files
+*.class
+#ignore xml files
+*.xml
