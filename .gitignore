@@ -2,3 +2,5 @@
 *.class
 #ignore xml files
 *.xml
+#ignore fxml files
+*.fxml

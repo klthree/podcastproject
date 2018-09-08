@@ -14,20 +14,22 @@ import java.util.Scanner;
 public class Podcatcher {
 
     private List<Episode> episodeList;
-
-    public void staxTest (String xmlFile) {
+    private Episode episode;
+    
+    public void staxTest (String xmlUrl) {
         Scanner keyboard = new Scanner(System.in);
+        String prefix = "";
+        if (!xmlUrl.startsWith("http") && !xmlUrl.startsWith("https")) {
+            xmlUrl = "http://" + xmlUrl;
+        }
 
         try {
             episodeList = new ArrayList<>();
             XMLInputFactory xmlif = XMLInputFactory.newInstance();
 
 //            XMLStreamReader xmlr = xmlif.createXMLStreamReader(new FileReader(xmlFile));
-            XMLStreamReader xmlr = xmlif.createXMLStreamReader(new URL(xmlFile).openStream());
-            int suffix = 0;
-            int novel = 0;
+            XMLStreamReader xmlr = xmlif.createXMLStreamReader(new URL(xmlUrl).openStream());
             Show show = new Show();
-            Episode episode = new Episode();
             
             while (xmlr.hasNext()) {
                 if (xmlr.getEventType() == XMLStreamConstants.START_ELEMENT &&
@@ -47,7 +49,7 @@ public class Podcatcher {
                                     switch (element) {
                                         case "title":
                                             System.out.println(value);
-                                            episode.setTitle(value);
+                                            show.setTitle(value);
                                             break;
                                         case "description":
                                             show.setDescription(value);
@@ -69,13 +71,13 @@ public class Podcatcher {
                 }
                 else if (xmlr.getEventType() == XMLStreamConstants.START_ELEMENT &&
                     xmlr.getLocalName().equals("item")) {
-                        
-                        
+                        episode = new Episode();
+                         
                         while (xmlr.hasNext()) {
                             if (xmlr.getEventType() == XMLStreamConstants.END_ELEMENT && 
                                     xmlr.getLocalName().equals("item")) {
                                 episodeList.add(episode);
-//                                System.out.println(episode.toString());
+                                System.out.println(episode.toString());
                                 break;        
                             }
                             else if (xmlr.getEventType() == XMLStreamConstants.START_ELEMENT) {
@@ -119,19 +121,19 @@ public class Podcatcher {
                 }
                 xmlr.next();
             }
-//            for (Episode ep: episodeList) {
-//                System.out.println(ep);
-//            }
-//
-//            System.out.print("Enter guid of episode to download: ");
-//            String episodeToDownload = keyboard.nextLine();
-//            for (Episode ep: episodeList) {
-//                if (ep.getGuid().contains(episodeToDownload)) {
-//                    Downloader dler = new Downloader(ep.getUrl());
-//                    dler.download();
-//                    break;
-//                }
-//            }
+            for (Episode ep: episodeList) {
+                System.out.println(ep);
+            }
+
+            System.out.print("Enter guid of episode to download: ");
+            String episodeToDownload = keyboard.nextLine();
+            for (Episode ep: episodeList) {
+                if (ep.getGuid().contains(episodeToDownload)) {
+                    Downloader dler = new Downloader(ep.getUrl());
+                    dler.download();
+                    break;
+                }
+            }
         }
         catch (XMLStreamException e) {
             System.out.println(e);

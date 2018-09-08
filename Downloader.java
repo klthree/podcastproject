@@ -13,13 +13,16 @@ public class Downloader {
     private String destFilename;
     public static String filetype;
 
-    public Downloader(String fileUrl) {
+    public Downloader(String urlToDownload) {
 
         try {
-            this.fileUrl = new URL(fileUrl);
+            this.fileUrl = new URL(urlToDownload);
             URLConnection identifier = this.fileUrl.openConnection();
             this.filetype = identifier.getContentType();
-            destFilename = fileUrl.substring(fileUrl.lastIndexOf('/') + 1, fileUrl.length());        
+            String urlPath = fileUrl.getPath();
+            System.out.println("\n\n\n" + urlPath + "\n\n\n");
+            destFilename = urlToDownload.substring(urlPath.lastIndexOf('/') + 1, urlPath.length()); 
+            System.out.println("\n\n\n" + destFilename + "\n\n\n");
         }
         catch (MalformedURLException e) {
             System.out.println(e);
@@ -28,7 +31,7 @@ public class Downloader {
             System.out.println(e);
         }
     }
-
+    
     public String getFilename() {
         return destFilename;
     }
@@ -42,7 +45,8 @@ public class Downloader {
         try {
 
             ReadableByteChannel rbc = Channels.newChannel(fileUrl.openStream());
-            if (filetype.contains("mpeg") /*&& !destFilename.contains("mpeg") && !destFilename.contains("mp3")*/){
+            System.out.println(filetype);
+            if (filetype.contains("mpeg") && !destFilename.endsWith(".mpeg") && !destFilename.endsWith(".mp3")){
                 suffix = ".mp3";
             }
             else if (filetype.contains("jpeg") && !destFilename.contains("jpeg") && !destFilename.contains("jpg")) {
