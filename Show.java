@@ -5,6 +5,7 @@ public class Show {
     private String link;
     private String description;
     private String language;
+    private List<Episode> = new ArrayList<>();
 
     public Show() {
     }
@@ -47,6 +48,8 @@ public class Show {
     public String getLanguage() {
         return language;
     }
+
+    
 
     public String toString() {
         return "\nShow title: " + title + "\nShow description: " + description + "\nShow link: " + link + "\nLanguage: " + language + "\n";

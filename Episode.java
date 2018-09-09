@@ -1,6 +1,6 @@
 package podcastproject;
 
-public class Episode extends Show {
+public class Episode {
     private String title;
     private String description;
     private String link;
@@ -10,27 +10,20 @@ public class Episode extends Show {
     private String duration;
     private String url;
 
-    public Episode() {
-    }
-
-    public Episode (String showTitle, String showDescription, String showLink, String showLanguage){
-        super(showTitle, showDescription, showLink, showLanguage);
-    }
-
-    public void setDescription(String desc) {
-        this.description = desc;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
     public void setTitle(String title) {
         this.title = title;
     }
 
     public String getTitle() {
         return title;
+    }
+    
+    public void setDescription(String desc) {
+        this.description = desc;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public void setGuid(String guid) {
