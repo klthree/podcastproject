@@ -5,15 +5,10 @@ import java.util.ArrayList;
 
 public class Podcast extends Show {
     private String imageUrl;
+    
     private List<Episode> episodeList = new ArrayList<>();
+    
     private boolean isDownloaded = false;
-
-//    public Podcast(String title, String description, String link, String language) {
-//        this.title = title;
-//        this.description = description;
-//        this.link = link;
-//        this.language = language;
-//    }
 
     public void setIsDownloaded(boolean isDownloaded) {
         this.isDownloaded = isDownloaded;

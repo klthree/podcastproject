@@ -16,9 +16,13 @@ public class Podcatcher {
 
 //    private List<Episode> episodeList;
     private Episode episode;
+
     private Podcast podcast;
+
     private XMLInputFactory xmlif = XMLInputFactory.newInstance();
+
     private XMLStreamReader xmlsr;
+
     private static Scanner keyboard = new Scanner(System.in);
 
     public Podcast createShow(String xmlUrl) {
@@ -26,23 +30,17 @@ public class Podcatcher {
             podcast = new Podcast();
             xmlsr = xmlif.createXMLStreamReader(new URL(xmlUrl).openStream());
 
-            while (xmlsr.hasNext()) {
+OUTER_LOOP: while(xmlsr.hasNext()) {
+                
                 if (xmlsr.getEventType() == XMLStreamConstants.START_ELEMENT) {
                     String elementName = xmlsr.getLocalName();
                     
-                    if (elementName.equals("item")) {
-                        System.out.println("BYE");
-                        break;
-                    }
-                    else if (elementName.equals("image")) {
-                        podcast.setImageUrl(getImageUrl(xmlsr));
-                        break;
-                    }
-                    else {
-//                        xmlsr.next();
-//                        if (xmlsr.getEventType() == XMLStreamConstants.CHARACTERS &&
-//                                xmlsr.hasText()) {
                             switch (elementName) {
+                                case "item":
+                                    break OUTER_LOOP;
+                                case "image":
+                                    podcast.setImageUrl(getImageUrl(xmlsr));
+                                    break OUTER_LOOP;
                                 case "title":
                                     podcast.setTitle(xmlsr.getElementText());
                                     break;
@@ -57,10 +55,9 @@ public class Podcatcher {
                                     break;
                                 default:
                                     break;
-                            }
-//                        }
-                    }
+                            }                    
                 }
+                
                 xmlsr.next();
             }
         }
@@ -80,16 +77,16 @@ public class Podcatcher {
         return podcast;
     }
 
-    public void createEpisodeList(/*String xmlUrl*/) {
+    public void createEpisodeList() {
         try {
-            //xmlsr = xmlif.createXMLStreamReader(new URL(xmlUrl).openStream());
-            //episodeList = new ArrayList<>();
-            
             while (xmlsr.hasNext()) {
+            
                 if (xmlsr.getEventType() == XMLStreamConstants.START_ELEMENT &&
                         xmlsr.getLocalName().equals("item")) {
                     episode = new Episode();    
+                    
                     while (xmlsr.hasNext()) {
+                        
                         if (xmlsr.getEventType() == XMLStreamConstants.END_ELEMENT &&
                                 xmlsr.getLocalName().equals("item")) {
                             podcast.addEpisode(episode);
@@ -98,16 +95,9 @@ public class Podcatcher {
                         else if (xmlsr.getEventType() == XMLStreamConstants.START_ELEMENT) {
                             String elementName = xmlsr.getLocalName();
                             
-                            if (elementName.equals("enclosure")) {
-                                episode.setEnclosureUrl(xmlsr.getAttributeValue(0));
-                            }
-//                            else {
-//                                xmlsr.next();
-//                            }
-//
-//                            if (xmlsr.getEventType() == XMLStreamConstants.CHARACTERS &&
-//                                    xmlsr.hasText()) {
                                 switch (elementName) {
+                                    case "enclosure":
+                                        episode.setEnclosureUrl(xmlsr.getAttributeValue(0));
                                     case "title":
                                         episode.setTitle(xmlsr.getElementText());
                                         break;
@@ -130,59 +120,51 @@ public class Podcatcher {
                                     default:
                                         break;
                                 }
-//                            }
                         }
                         xmlsr.next();
                     }
                 }
-                xmlsr.next();
-                
+                xmlsr.next();                
             }
         }
         catch (XMLStreamException e) {
             e.printStackTrace();
         }
-//        catch (MalformedURLException e) {
-//            System.out.println(e);
-//        }
-//        catch (IOException e) {
-//            System.out.println(e);
-//        }
-//        return episodeList;
     }
 
     private String getImageUrl(XMLStreamReader xmlsr) {
         try {
             while (xmlsr.hasNext()) {
+                
                 if (xmlsr.getEventType() == XMLStreamConstants.START_ELEMENT &&
                         xmlsr.getLocalName().equals("url")) {
-                        xmlsr.next();
+                        
+                    xmlsr.next();
+                    
                     if (xmlsr.getEventType() == XMLStreamConstants.CHARACTERS) {
                             return xmlsr.getText();
                     }
                 }
-
             xmlsr.next();
             }
-        }
-        
+        }        
         catch (XMLStreamException e) {
             System.out.println(e);
         }
+
         return null;
     }
 
     public static void main (String[] args) {
         System.out.print("Enter feed url: ");
         String url = keyboard.nextLine();
-        Podcatcher podcatcher = new Podcatcher();
-        
 
+        Podcatcher podcatcher = new Podcatcher();     
         Podcast practiceShow = podcatcher.createShow(url);
+        
         System.out.println(practiceShow);
         
         podcatcher.createEpisodeList();
-
 
         List<Episode> epList = practiceShow.getEpisodeList();
         int count = epList.size();

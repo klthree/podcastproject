@@ -1,10 +1,15 @@
 package podcastproject;
 
 public class Episode extends Show {
+
     private String pubDate;
+    
     private String category;
+    
     private String guid;
+    
     private String duration;
+    
     private String enclosureUrl;
 
 
