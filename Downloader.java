@@ -20,9 +20,9 @@ public class Downloader {
             URLConnection identifier = this.fileUrl.openConnection();
             this.filetype = identifier.getContentType();
             String urlPath = fileUrl.getPath();
-            System.out.println("\n\n\n" + urlPath + "\n\n\n");
-            destFilename = urlToDownload.substring(urlPath.lastIndexOf('/') + 1, urlPath.length()); 
-            System.out.println("\n\n\n" + destFilename + "\n\n\n");
+            System.out.println("\n\n\nURL path: " + urlPath + "\n\n\n");
+            destFilename = urlPath.substring(urlPath.lastIndexOf('/') + 1, urlPath.length()); 
+            System.out.println("\n\n\nFile name from that: " + destFilename + "\n\n\n");
         }
         catch (MalformedURLException e) {
             System.out.println(e);
