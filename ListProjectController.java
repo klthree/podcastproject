@@ -1,6 +1,3 @@
-/**
- * Sample Skeleton for 'Untitled' Controller Class
- */
 package podcastproject;
 
 import javafx.scene.control.SelectionMode;
@@ -16,8 +13,13 @@ import java.util.List;
 public class ListProjectController {
     
     Podcatcher podcatcher = new Podcatcher();
+    Podcast podcast = new Podcast();
+
     List<Episode> epList;
     List<String> titleList = new ArrayList<>();
+    List<Show> showList;
+    List<String> shTitleList = new ArrayList<>();
+
     @FXML // ResourceBundle that was given to the FXMLLoader
     private ResourceBundle resources;
 
@@ -26,18 +28,23 @@ public class ListProjectController {
 
     @FXML private ListView<String> listview; // Value injected by FXMLLoader
     
+    @FXML private ListView<String> listview1;
 
     @FXML // This method is called by the FXMLLoader when initialization is complete
     public void initialize() {
-        epList = podcatcher.createEpisodeList("http://feeds.wnyc.org/2dopequeens");
+        podcast = podcatcher.createShow("http://feeds.wnyc.org/2dopequeens");
+        podcatcher.createEpisodeList();
+        epList = podcast.getEpisodeList();
+
         for (Episode ep: epList) {
             titleList.add(ep.getTitle());
         }
-        ObservableList<String> ol = FXCollections.observableList(titleList);
-    
-        listview.setItems(ol);
-        //listview.getItems().addAll("Hello", "bon jour", "aloha", "hola");
-        //listview.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+
+        ObservableList<String> el = FXCollections.observableList(titleList);
+        listview.setItems(el);
+        listview1.getItems().addAll("Hello", "bon jour", "aloha", "hola");
+        listview.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         assert listview != null : "fx:id=\"listview\" was not injected: check your FXML file 'Untitled'.";
 
     }
