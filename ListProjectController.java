@@ -65,6 +65,12 @@ public class ListProjectController {
     }
     
     @FXML
+    public void episodeListPopulator(MouseEvent me) {
+        Episode currentEpisode = listview1.getSelectionModel().getSelectedItem();
+        populateTextArea(currentEpisode);
+    }
+
+    @FXML
     public void onSelection(MouseEvent me) {
         Podcast currentlySelected = listview.getSelectionModel().getSelectedItem();
         podcatcher.createEpisodeList(currentlySelected);
@@ -73,9 +79,6 @@ public class ListProjectController {
 
         ObservableList<Episode> el = FXCollections.observableList(epList);
         listview1.setItems(el);
-
-        Episode currentEpisode = listview1.getSelectionModel().getSelectedItem();
-        populateTextArea(currentEpisode);
     }
 
 }
