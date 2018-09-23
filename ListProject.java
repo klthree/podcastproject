@@ -1,3 +1,12 @@
+
+/*
+ * The podcastproject package contains classes that are part of a podcast client
+ *
+ * All code in main(String[] args) methods are for testing purposes only.
+ *
+ * ListProject launches application
+ *
+ */
 package podcastproject;
 
 import javafx.application.Application;

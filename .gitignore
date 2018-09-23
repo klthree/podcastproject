@@ -4,3 +4,5 @@
 *.xml
 #ignore fxml files
 *.fxml
+#ignore txt files
+*.txt

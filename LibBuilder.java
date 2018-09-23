@@ -9,44 +9,40 @@ import java.io.FileReader;
 import java.io.BufferedReader;
 import java.util.List;
 import java.util.ArrayList;
+import java.io.IOException;
 
 public class LibBuilder {
     private String feedUrl;
     private String libraryFile = "feedLib";
+    Scanner keyboard = new Scanner(System.in);
 
-    public LibBuilder (String feedUrl) {
-        this.feedUrl = feedUrl + "\n";
-    }
-
-    public void download() {
+    public void writeToFile() {
         try {
-            BufferedWriter bw = new BufferedWriter(new FileWriter("feedLib", true));
-            bw.write(feedUrl);
+            FileWriter fw = new FileWriter("feedLib", true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            String url;
+    
+            while (true) {
+                System.out.print("Enter url to add to library: ");
+    
+                url = keyboard.nextLine();
+    
+                if (url.equals("0")) {
+                    break;
+                }
+    
+                bw.write(url + "\n");
+            }
+    
             bw.close();
         }
-        catch (Exception e) {
+        catch (IOException e) {
             System.out.println(e);
         }
     }
 
-    public List<Episode> showListBuilder () throws Exception {
-        
-        BufferedReader br = new BufferedReader(new FileReader(libraryFile));
-        
-        //while ((String url = br.readLine()) != null) {
-            // scan url for show information using xml streamreader. do i pass
-            // that to a i
-            // do it one way online
-            // do it another way offline
-        //}
-        return null;
-    }
-
     public static void main (String[] args) {
-        Scanner keyboard = new Scanner (System.in);
-        System.out.print("Enter RSS feed url: ");
-        String input = keyboard.nextLine();
-        LibBuilder lb = new LibBuilder(input);
-        lb.download();
+        LibBuilder lb = new LibBuilder();
+        lb.writeToFile();
     }
 }

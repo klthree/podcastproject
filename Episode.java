@@ -1,3 +1,12 @@
+
+/*
+ * The podcastproject package contains classes that are part of a podcast client
+ *
+ * All code in main(String[] args) methods are for testing purposes only.
+ *
+ * Episode represents an individuals episode of a podcast
+ */
+
 package podcastproject;
 
 public class Episode extends Show {
@@ -38,6 +47,6 @@ public class Episode extends Show {
     }
 
     public String toString() {
-        return "\nguid: " + getGuid() + "\nEpisode title: " + getTitle() + "\nEpisode Description: " + getDescription() + "\nEpisode link: " + getLink() + "\nEpisode date: " + getPubDate() + "\nDownload link: " + getEnclosureUrl() + "\n\n";
+        return /*"\nguid: " + getGuid() + */"\nEpisode title: " + getTitle() + "\nEpisode Description: " + getDescription()/* + "\nEpisode link: " + getLink() + "\nEpisode date: " + getPubDate() + "\nDownload link: " + getEnclosureUrl() + "\n\n"*/;
     }
 }
