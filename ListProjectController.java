@@ -1,6 +1,6 @@
 
 /*
- mage("https://upload.wikimedia.org/wikipedia/commons/f/f1/Ruby_logo_64x64.png");* The podcastproject package contains classes that are part of a podcast client
+ * The podcastproject package contains classes that are part of a podcast client
  *
  * All code in main(String[] args) methods are for testing purposes only.
  *
