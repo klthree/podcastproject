@@ -143,7 +143,8 @@ OUTER_LOOP: while(xmlsr.hasNext()) {
                             podcast.addEpisode(episode);
                             break;
                         }
-                        else if (xmlsr.getEventType() == XMLStreamConstants.START_ELEMENT) {
+                        else if (xmlsr.getEventType() == XMLStreamConstants.START_ELEMENT &&
+                                xmlsr.getNamespaceURI() == null) {
                             
                             String elementName = xmlsr.getLocalName();
                             
@@ -151,6 +152,7 @@ OUTER_LOOP: while(xmlsr.hasNext()) {
               
                                 case "enclosure":
                                     episode.setEnclosureUrl(xmlsr.getAttributeValue(0));
+                                    break;
                                 case "title":
                                     episode.setTitle(xmlsr.getElementText());
                                     break;
@@ -223,60 +225,60 @@ OUTER_LOOP: while(xmlsr.hasNext()) {
     // Testing
     public static void main (String[] args) {
 
-        System.out.print("Enter name of file: ");
-        String filename = keyboard.nextLine();
-
-        List<Podcast> pcList;
-
-        Podcatcher podcatcher = new Podcatcher();
-        pcList = podcatcher.createShowListFromFile(filename);
+//        System.out.print("Enter name of file: ");
+//        String filename = keyboard.nextLine();
+//
+//        List<Podcast> pcList;
+//
+//        Podcatcher podcatcher = new Podcatcher();
+//        pcList = podcatcher.createShowListFromFile(filename);
         
         int count = 0;
 
-        for (Podcast pc: pcList) {
-            System.out.println(count++ + "\n" + pc + "\n\n");
-        }
+//        for (Podcast pc: pcList) {
+//            System.out.println(count++ + "\n" + pc + "\n\n");
+//        }
         
-        while (true) {
-
-            System.out.print("Enter show number to see episode list: ");
-            String selection = keyboard.nextLine();
-            
-            if (selection.equals("-1")) {
-                break;
-            }
-            
-            podcatcher.createEpisodeList(pcList.get(Integer.parseInt(selection)));
-
-            List<Episode> epList = pcList.get(Integer.parseInt(selection)).getEpisodeList();
-            int epListSize = epList.size();
-    
-            for (Episode ep: epList) {
-                System.out.println("Episode: " + epListSize);
-                System.out.println(ep);
-                System.out.println("------------------------------------------------------------------------------------------");
-            }
-        
-        }
-
-//        System.out.print("Enter feed url: ");
-//        String url = keyboard.nextLine();
+//        while (true) {
 //
-//        Podcatcher podcatcher = new Podcatcher();     
-//        Podcast practiceShow = podcatcher.createShow(url);
-//        
-//        System.out.println(practiceShow);
-//        
-//        podcatcher.createEpisodeList(practiceShow);
-//
-
-//            Collections.reverse(epList);
-//
-//            count = 1;
-//            for (Episode ep: epList) {
-//                System.out.println("Episode " + count++ + ":");
-//                System.out.println(ep);
+//            System.out.print("Enter show number to see episode list: ");
+//            String selection = keyboard.nextLine();
+//            
+//            if (selection.equals("-1")) {
+//                break;
 //            }
+//            
+//            podcatcher.createEpisodeList(pcList.get(Integer.parseInt(selection)));
+//
+//            List<Episode> epList = pcList.get(Integer.parseInt(selection)).getEpisodeList();
+//            int epListSize = epList.size();
+//    
+//            for (Episode ep: epList) {
+//                System.out.println("Episode: " + epListSize);
+//                System.out.println(ep);
+//                System.out.println("------------------------------------------------------------------------------------------");
+//            }
+//        
+//        }
+
+        System.out.print("Enter feed url: ");
+        String url = keyboard.nextLine();
+
+        Podcatcher podcatcher = new Podcatcher();     
+        Podcast practiceShow = podcatcher.createShow(url);
+        
+        System.out.println(practiceShow);
+       
+        podcatcher.createEpisodeList(practiceShow);
+
+
+//           Collections.reverse(epList);
+
+//           count = 1;
+           for (Episode ep: practiceShow.getEpisodeList()) {
+               System.out.println("Episode " + count++ + ":");
+               System.out.println(ep);
+           }
         //System.out.println(podcatcher.getEpisodeList());
     } 
 }

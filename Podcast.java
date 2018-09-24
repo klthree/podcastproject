@@ -58,6 +58,6 @@ public class Podcast extends Show {
     }
 
     public String toString() {
-        return "\nShow title: " + getTitle() + "\nShow description: " + getDescription()/* + "\nShow link: " + getLink() + "\nLanguage: " + getLanguage() + "\n" + "Image found at: " + getImageUrl()*/;
+        return "\nShow title: " + getTitle() + "\nShow description: " + getDescription() + "\nShow link: " + getLink() + "\nLanguage: " + getLanguage() + "\n" + "Image found at: " + getImageUrl();
     }
 }
