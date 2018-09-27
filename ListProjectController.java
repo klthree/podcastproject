@@ -1,4 +1,3 @@
-
 /*
  * The podcastproject package contains classes that are part of a podcast client
  *
@@ -19,7 +18,9 @@ import javafx.scene.Node;
 
 import javafx.scene.input.MouseEvent;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
 import java.net.URL;
@@ -28,6 +29,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import javafx.scene.web.WebView;
 
 public class ListProjectController {
@@ -39,7 +42,8 @@ public class ListProjectController {
     List<String> titleList = new ArrayList<>();
     List<Podcast> showList;
     List<String> shTitleList = new ArrayList<>();
-    
+    private ObservableList<Podcast> pl;
+
     /*https://stackoverflow.com/questions/30829164/how-to-display-html-in-javafx-application*/
     @FXML private WebView renderFormattedText;
 
@@ -56,12 +60,14 @@ public class ListProjectController {
 
     @FXML private TextArea bottomTextArea;
 
+    @FXML private TextField urlEntry;
+
     @FXML // This method is called by the FXMLLoader when initialization is complete
     public void initialize() {
         showList = podcatcher.createShowListFromFile("feedLib");
 
-        ObservableList<Podcast> el = FXCollections.observableList(showList);
-        listview.setItems(el);
+        pl = FXCollections.observableList(showList);
+        listview.setItems(pl);
         
         listview.setCellFactory(new Callback<ListView<Podcast>, ListCell<Podcast>>() {
             @Override
@@ -104,24 +110,66 @@ public class ListProjectController {
         ObservableList<Episode> el = FXCollections.observableList(epList);
         listview1.setItems(el);
     }
+    
+    public void showUrlAdder() {
+        
+        String showUrl = urlEntry.getText();
 
-//docs.oracle.com/javafx/2/ui_controls/list-view.htm#CEGGEDBF
-static class imageCell extends ListCell<Podcast> {
-//    @Override
+        for (Podcast p: pl) {
+            if (showUrl.equals(p.getRssFeedUrl())) {
+                System.out.println("You already have that one");
+                return;
+            }
+        }
+
+        Podcatcher podcatcher = new Podcatcher();
+        Podcast newlyAdded = podcatcher.createShow(showUrl);
+        pl.add(newlyAdded);
+
+        new LibBuilder().writeToFile(showUrl + "\n");
+    }
+
+    //docs.oracle.com/javafx/2/ui_controls/list-view.htm#CEGGEDBF
+    static class imageCell extends ListCell<Podcast> {
+        
+        private Map<String, Image> imageCache = new LinkedHashMap<>();
+        private String title;
+        private String imageUrl;
+        private Image im;
+        private ImageView imageview = new ImageView();
+
+    //    @Override
         public void updateItem(Podcast p, boolean empty) {
+
             super.updateItem(p, empty);
-            if (empty || p.getImageUrl() == null) {
-                setText(null);
+            
+            if (empty) {
                 setGraphic(null);
             }
             else {
+                title = p.getTitle();
             
-                Image im = new Image(p.getImageUrl(), 100, 100, false, true, true);
-                ImageView imageView = new ImageView();
-                imageView.setImage(im);
-                setGraphic(imageView);
+    
+                if (p.getImageUrl() == null) {
+               
+                    imageUrl = "https://upload.wikimedia.org/wikipedia/commons/a/ac/No_image_available.svg";
+                }
+                else {
+                    imageUrl = p.getImageUrl();
+                }
+            
+
+                if ((imageCache.get(imageUrl) == null)) {
+                  
+                    im = new Image(imageUrl, 100, 100, false, true, true);
+                    imageCache.put(imageUrl, im);
+                }
+            
+
+            imageview.setImage(imageCache.get(imageUrl));
+            setText(title);
+            setGraphic(imageview);
             }
         }
+    }
 }
-}
-

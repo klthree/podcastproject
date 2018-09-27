@@ -96,7 +96,7 @@ OUTER_LOOP: while(xmlsr.hasNext()) {
         List<Podcast> showList = new ArrayList<>();
         
         try {
-            FileReader fr = new FileReader(filename);
+            FileReader fr = new FileReader("podcastproject/" + filename);
             BufferedReader br = new BufferedReader(fr);
             Podcatcher podcatcher = new Podcatcher();
 

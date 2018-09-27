@@ -13,27 +13,28 @@ import java.io.IOException;
 
 public class LibBuilder {
     private String feedUrl;
-    private String libraryFile = "feedLib";
+    private String libraryFile = "podcastproject/feedLib";
     Scanner keyboard = new Scanner(System.in);
 
-    public void writeToFile() {
+    public void writeToFile(String showUrl) {
         try {
-            FileWriter fw = new FileWriter("feedLib", true);
+            FileWriter fw = new FileWriter(libraryFile, true);
             BufferedWriter bw = new BufferedWriter(fw);
-            String url;
     
-            while (true) {
-                System.out.print("Enter url to add to library: ");
-    
-                url = keyboard.nextLine();
-    
-                if (url.equals("0")) {
-                    break;
-                }
-    
-                bw.write(url + "\n");
-            }
-    
+//            while (true) {
+//                System.out.print("Enter url to add to library: ");
+//    
+//                url = keyboard.nextLine();
+//    
+//                if (url.equals("0")) {
+//                    break;
+//                }
+//    
+//                bw.write(url + "\n");
+//            }
+            
+            bw.write(showUrl);
+
             bw.close();
         }
         catch (IOException e) {
@@ -42,7 +43,7 @@ public class LibBuilder {
     }
 
     public static void main (String[] args) {
-        LibBuilder lb = new LibBuilder();
-        lb.writeToFile();
+//        LibBuilder lb = new LibBuilder();
+//       lb.writeToFile();
     }
 }
