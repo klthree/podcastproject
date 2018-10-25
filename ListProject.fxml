@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.Blend?>
 <?import javafx.scene.effect.InnerShadow?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.web.WebView?>
 
@@ -52,21 +58,40 @@
         </Menu>
       </menus>
     </MenuBar>
-      <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="640.0" VBox.vgrow="ALWAYS">
+      <SplitPane dividerPositions="0.07679914070891515, 0.8098818474758326, 0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="640.0" VBox.vgrow="ALWAYS">
          <items>
+            <HBox maxHeight="-Infinity" maxWidth="1.7976931348623157E308" prefHeight="0.0" prefWidth="638.0">
+               <children>
+                  <TextField fx:id="urlEntry" prefHeight="26.0" prefWidth="586.0" promptText="Enter URL" />
+                  <Button fx:id="addShowButton" mnemonicParsing="false" onAction="#showUrlAdder" prefHeight="26.0" prefWidth="114.0" text="Add Show" />
+               </children>
+            </HBox>
             <SplitPane dividerPositions="0.5" prefHeight="163.0" prefWidth="638.0">
                <items>
-                  <ListView fx:id="listview" onMouseClicked="#onSelection" prefHeight="374.0" prefWidth="230.0">
+                  <ListView fx:id="listview" onMouseClicked="#populateEpisodeList" prefHeight="374.0" prefWidth="230.0">
                      <effect>
                         <InnerShadow />
                      </effect></ListView>
-                  <ListView fx:id="listview1" onMouseClicked="#episodeListPopulator" prefHeight="200.0" prefWidth="200.0">
+                  <ListView fx:id="listview1" onMouseClicked="#episodeViewer" prefHeight="200.0" prefWidth="200.0">
                      <effect>
                         <Blend />
                      </effect></ListView>
                </items>
             </SplitPane>
             <WebView fx:id="renderFormattedText" prefHeight="200.0" prefWidth="200.0" />
+            <ButtonBar prefHeight="0.0" prefWidth="638.0">
+              <buttons>
+                  <Button fx:id="playButton" mnemonicParsing="false" onAction="#play" text="Play" />
+                <Button fx:id="pauseButton" mnemonicParsing="false" onAction="#pause" text="Pause" />
+                  <Button fx:id="stopButton" mnemonicParsing="false" onAction="#stop" text="Stop" />
+                  <VBox>
+                     <children>
+                        <Slider fx:id="volumeController" />
+                        <Label text="Volume" />
+                     </children>
+                  </VBox>
+              </buttons>
+            </ButtonBar>
          </items>
       </SplitPane>
   </children>
