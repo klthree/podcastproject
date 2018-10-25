@@ -14,8 +14,18 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.util.Callback;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+
 import javafx.scene.Node;
 
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.scene.control.Slider;
+
+
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.Button;
@@ -34,9 +44,14 @@ import java.util.Map;
 import javafx.scene.web.WebView;
 
 public class ListProjectController {
-    
+    Media toPlay;
+    MediaPlayer mediaPlayer;
+    private boolean isPlaying;
+
     Podcatcher podcatcher = new Podcatcher();
     Podcast podcast = new Podcast();
+    Podcast currentlySelectedPodcast;
+    Episode currentlySelectedEp;
 
     List<Episode> epList;
     List<String> titleList = new ArrayList<>();
@@ -62,13 +77,39 @@ public class ListProjectController {
 
     @FXML private TextField urlEntry;
 
+    @FXML private Button playButton;
+    @FXML private Button stopButton;
+    @FXML private Button pauseButton;
+    @FXML private Slider volumeController;
+
     @FXML // This method is called by the FXMLLoader when initialization is complete
     public void initialize() {
+        
+        volumeController.setMax(1.0);
+        volumeController.setMin(0.0);
+        volumeController.setValue(0.5);
+        volumeController.valueProperty().addListener(new ChangeListener<Number>() {
+            
+            @Override
+            public void changed (ObservableValue<? extends Number> observable, Number oldVal, Number newVal) 
+            {
+                mediaPlayer.setVolume(newVal.doubleValue());
+            }
+            
+        });
+
+
         showList = podcatcher.createShowListFromFile("feedLib");
 
         pl = FXCollections.observableList(showList);
         listview.setItems(pl);
-        
+
+//        volumeControl.valueProperty().addListener((obs, oldVal, newVal) -> {
+//            System.out.println("Hello");
+//            mediaPlayer.setVolume(newVal.doubleValue());
+//            System.out.println("Value changing: " + newVal);
+//        });
+
         listview.setCellFactory(new Callback<ListView<Podcast>, ListCell<Podcast>>() {
             @Override
             public ListCell<Podcast> call(ListView<Podcast> listview) {
@@ -76,54 +117,87 @@ public class ListProjectController {
             }
         });
 
+
         assert listview != null : "fx:id=\"listview\" was not injected: check your FXML file 'Untitled'.";
 
     }
 
-    public void populateListView(List<Episode> list) {
-        ObservableList<Episode> epContentList = FXCollections.observableList(list);
-        listview1.setItems(epContentList);
-    }
-
-    public void populateTextArea(Episode ep) {
-        bottomTextArea.setText(ep.getGuid() + "\n" + ep.getTitle() + "\n" + ep.getDescription() + "\n" + ep.getLink() + "\n" + ep.getEnclosureUrl() + "\n" + ep.getPubDate());
-    }
-
-    public void setWebViewArea(Episode ep) {
-        renderFormattedText.getEngine().loadContent(ep.getGuid() + "\n" + ep.getTitle() + "<p>" + ep.getDescription() +  "</p><p>" + ep.getLink() + "</p><p><a href=" + ep.getEnclosureUrl() + ">Download</a></p><p>" + ep.getPubDate() + "</p>");
-    }
-    
+    /* On selection of a specific podcast, show a list of that podcast's
+     * episodes*/
     @FXML
-    public void episodeListPopulator(MouseEvent me) {
-        Episode currentEpisode = listview1.getSelectionModel().getSelectedItem();
-//        populateTextArea(currentEpisode);
-        setWebViewArea(currentEpisode);
-    }
+    public void populateEpisodeList(MouseEvent me) {
+        currentlySelectedPodcast = listview.getSelectionModel().getSelectedItem();
+        podcatcher.createEpisodeList(currentlySelectedPodcast);
 
-    @FXML
-    public void onSelection(MouseEvent me) {
-        Podcast currentlySelected = listview.getSelectionModel().getSelectedItem();
-        podcatcher.createEpisodeList(currentlySelected);
-
-        epList = currentlySelected.getEpisodeList();
+        epList = currentlySelectedPodcast.getEpisodeList();
 
         ObservableList<Episode> el = FXCollections.observableList(epList);
         listview1.setItems(el);
     }
     
+    /* Select an episode and display in WebView */
+    @FXML
+    public void episodeViewer(MouseEvent me) {
+        
+        currentlySelectedEp = listview1.getSelectionModel().getSelectedItem();
+        setWebViewArea();
+    }
+
+    /* Renders the html content of episode description using javafx embedded
+     * browser */
+    public void setWebViewArea() {
+        
+        renderFormattedText.getEngine().loadContent(currentlySelectedEp.getGuid() + "\n" + currentlySelectedEp.getTitle() + "<p>" + currentlySelectedEp.getDescription() +  "</p><p>" + currentlySelectedEp.getLink() + "</p><p><a href=" + currentlySelectedEp.getEnclosureUrl() + ">Download</a></p><p>" + currentlySelectedEp.getPubDate() + "</p>");
+    }
+
+
+
+    public void makeNewMediaPlayer () {
+            toPlay = new Media(currentlySelectedEp.getEnclosureUrl());
+            mediaPlayer = new MediaPlayer(toPlay);
+    }
+
+    public void play() {
+    
+        if (mediaPlayer == null || mediaPlayer.getStatus() == MediaPlayer.Status.STOPPED) {
+            makeNewMediaPlayer();
+        }
+        else if (mediaPlayer.getStatus() == MediaPlayer.Status.PLAYING) {
+            stop();
+            makeNewMediaPlayer();
+        }
+
+        mediaPlayer.play();
+    }
+
+    public void stop() {
+        mediaPlayer.stop();
+    }
+
+    public void pause() {
+        mediaPlayer.pause();
+    }
+
+    /* Allows user to add show by entering rss feed url */
     public void showUrlAdder() {
         
         String showUrl = urlEntry.getText();
 
         for (Podcast p: pl) {
             if (showUrl.equals(p.getRssFeedUrl())) {
-                System.out.println("You already have that one");
+                
+                Alert alreadyPresent = new Alert(AlertType.INFORMATION);
+                alreadyPresent.setTitle("Error");
+                alreadyPresent.setContentText("You already have that one");
+                alreadyPresent.show();
                 return;
             }
         }
 
         Podcatcher podcatcher = new Podcatcher();
+        
         Podcast newlyAdded = podcatcher.createShow(showUrl);
+        
         pl.add(newlyAdded);
 
         new LibBuilder().writeToFile(showUrl + "\n");
